@@ -74,8 +74,11 @@ function createAccidentsTable(data) {
         .each(function (d, i) {
             var cell = d3.select(this);
 
-            // Skip circle drawing for non-numeric values
-            if (!isNaN(d.value) && i !== 0) {
+            // skip circle drawing for non-numeric values
+            if (!isNaN(d.value)) {
+                // make the cell position relative to allow the circles to grow in size on hover
+                var cell = d3.select(this).style("position", "relative");
+
                 var diameter = calculateDiameter(+d.value, adjustedMaxValue, maxCircleDiameter);
                 const opacityScale = d3.scaleLinear()
                     .domain([0, adjustedMaxValue])
@@ -85,24 +88,50 @@ function createAccidentsTable(data) {
                 var svg = cell.append("svg")
                     .attr("width", cellSize)
                     .attr("height", cellSize)
-                    .style("display", "block")
-                    .style("margin", "auto");
+                    .style("position", "absolute")
+                    .style("top", 0)
+                    .style("left", 0)
+                    .style("overflow", "visible") // allow overflow for circle growing in size
+                    .style("pointer-events", "none"); // make SVG transparent to mouse events
 
-                svg.append("circle")
+                // group element to contain both circle and text
+                var group = svg.append("g")
+                    .style("pointer-events", "all"); // activate mouse events for the group
+
+                var circle = group.append("circle")
                     .attr("cx", cellSize / 2)
                     .attr("cy", cellSize / 2)
                     .attr("r", diameter / 2)
                     .style("fill", "lightblue")
                     .style("opacity", opacity);
 
-                svg.append("text")
+                var text = group.append("text")
                     .attr("x", cellSize / 2)
                     .attr("y", cellSize / 2)
                     .attr("dy", ".35em")
                     .attr("text-anchor", "middle")
                     .text(d.value)
                     .style("font-size", "12px");
-            } else if (i === 0) { // add labels for first column
+
+                // apply hover effects to the group
+                group.on("mouseover", function () {
+                    circle.transition().duration(750)
+                        .attr("r", diameter) // double radius on hover
+                        .style("opacity", Math.max(0.5, opacity - 0.2));
+
+                    text.transition().duration(750)
+                        .style("font-size", "24px"); // double the font size on hover
+                });
+
+                group.on("mouseout", function () {
+                    circle.transition().duration(750)
+                        .attr("r", diameter / 2) // reset the radius
+                        .style("opacity", opacity);
+
+                    text.transition().duration(750)
+                        .style("font-size", "12px"); // reset the font size
+                });
+            } else if (i === 0) { // add labels for the first column
                 cell.text(d.value);
             }
         });
