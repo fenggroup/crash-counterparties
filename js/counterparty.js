@@ -77,6 +77,10 @@ function createAccidentsTable(data) {
             // Skip circle drawing for non-numeric values
             if (!isNaN(d.value) && i !== 0) {
                 var diameter = calculateDiameter(+d.value, adjustedMaxValue, maxCircleDiameter);
+                const opacityScale = d3.scaleLinear()
+                    .domain([0, adjustedMaxValue])
+                    .range([0.5, 1]);
+                const opacity = opacityScale(+d.value);
 
                 var svg = cell.append("svg")
                     .attr("width", cellSize)
@@ -88,7 +92,8 @@ function createAccidentsTable(data) {
                     .attr("cx", cellSize / 2)
                     .attr("cy", cellSize / 2)
                     .attr("r", diameter / 2)
-                    .style("fill", "lightblue");
+                    .style("fill", "lightblue")
+                    .style("opacity", opacity);
 
                 svg.append("text")
                     .attr("x", cellSize / 2)
