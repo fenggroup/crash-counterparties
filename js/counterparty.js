@@ -1,12 +1,12 @@
-var filePath = "./data/dummy-data.csv";
+var filePath = "./data/counterparty-table-k.csv";
 
 // populate the table
 updateTable();
 
 // dimensions and margins for the table
-var width = 800,
-    height = 400,
-    margin = { top: 20, right: 50, bottom: 100, left: 60 };
+var width = 1000,
+    height = 800,
+    margin = { top: 20, right: 50, bottom: 100, left: 20 };
 
 // update the table with traffic accident data
 // this is a carry-over from the old table file -- I kept it here for when we add additional files that will require the file to be updated
@@ -102,7 +102,7 @@ function createAccidentsTable(data) {
                     .attr("cx", cellSize / 2)
                     .attr("cy", cellSize / 2)
                     .attr("r", diameter / 2)
-                    .style("fill", "lightblue")
+                    .style("fill", "red")
                     .style("opacity", opacity);
 
                 var text = group.append("text")
