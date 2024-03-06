@@ -19,9 +19,20 @@ function updateTable() {
     });
 }
 
-// Function to create the accidents table
 function createAccidentsTable(data) {
     var tableContainer = d3.select("#table");
+    const cellSize = 50; // fixed cell size for simplicity
+
+    // find the maximum value in the dataset
+    const maxValue = d3.max(data, row => {
+        return d3.max(Object.keys(row).map(column => {
+            return isNaN(row[column]) ? 0 : +row[column];
+        }));
+    });
+
+    // max value is at least 1 to avoid log scale issues
+    const adjustedMaxValue = maxValue > 0 ? maxValue : 1;
+    const maxCircleDiameter = cellSize * 0.9; // 90% of cellSize
 
     var table = tableContainer.append("table")
         .style("width", width + "px")
@@ -58,7 +69,46 @@ function createAccidentsTable(data) {
         })
         .enter()
         .append("td")
-        .text(d => d.value)
         .style("text-align", "center")
-        .style("font-weight", function (d, i) { return i === 0 ? "bold" : "normal"; });
+        .style("font-weight", function (d, i) { return i === 0 ? "bold" : "normal"; })
+        .each(function (d, i) {
+            var cell = d3.select(this);
+
+            // Skip circle drawing for non-numeric values
+            if (!isNaN(d.value) && i !== 0) {
+                var diameter = calculateDiameter(+d.value, adjustedMaxValue, maxCircleDiameter);
+
+                var svg = cell.append("svg")
+                    .attr("width", cellSize)
+                    .attr("height", cellSize)
+                    .style("display", "block")
+                    .style("margin", "auto");
+
+                svg.append("circle")
+                    .attr("cx", cellSize / 2)
+                    .attr("cy", cellSize / 2)
+                    .attr("r", diameter / 2)
+                    .style("fill", "lightblue");
+
+                svg.append("text")
+                    .attr("x", cellSize / 2)
+                    .attr("y", cellSize / 2)
+                    .attr("dy", ".35em")
+                    .attr("text-anchor", "middle")
+                    .text(d.value)
+                    .style("font-size", "12px");
+            } else if (i === 0) { // add labels for first column
+                cell.text(d.value);
+            }
+        });
+
+    // function to calculate diameter of the circle
+    function calculateDiameter(value, maxValue, maxDiameter) {
+        if (value <= 0) return 10; // return minimum size for non-positive values to avoid log(0)
+        const minDiameter = 10; // minimum visible diameter
+        var scale = d3.scaleLog()
+            .domain([1, maxValue]) // domain starts at 1
+            .range([minDiameter, maxDiameter]);
+        return scale(value);
+    }
 }
