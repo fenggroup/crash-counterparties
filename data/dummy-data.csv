@@ -1,0 +1,10 @@
+incident,pedestrian,cyclist,motorcycle,small car,medium car,large car,small truck,medium truck,large truck
+pedestrian,0,5,22,159,402,270,262,475,267
+cyclist,1,0,11,270,197,330,113,69,153
+motorcycle,8,5,0,178,61,105,11,35,430
+small car,15,135,89,0,128,291,141,413,484
+medium car,47,98,30,64,0,337,218,417,294
+large car,27,165,52,145,168,0,263,374,112
+small truck,26,56,5,70,109,131,0,320,207
+medium truck,47,34,17,206,208,187,160,0,214
+large truck,26,76,215,242,147,56,103,700,0

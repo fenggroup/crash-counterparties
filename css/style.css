@@ -1,0 +1,28 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
+body {
+	font-family: 'Roboto', serif;
+	text-align: center;
+	/* padding-bottom: 60px; */
+}
+
+.container {
+	width: 900px;
+	margin: 0px auto;
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+.line {
+	/* fill: rgba(200, 0, 0, 0.2); */
+	fill: none;
+	stroke: #00274C;
+	stroke-width: 2px;
+  }
+
+
+.datepicker,
+.table-condensed {
+	width: 220px;
+	height: 260px;
+}
