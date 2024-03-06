@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" rel="stylesheet" media="screen" href="./css/style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <title>Bicycle Counter Dashboard</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"
+        integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.standalone.min.css"
+        integrity="sha512-p4vIrJ1mDmOVghNMM4YsWxm0ELMJ/T0IkdEvrkNHIcgFsSzDi/fV7YxzTzb3mnMvFPawuIyIrHcpxClauEfpQg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style type="text/css">
+        #tooltip {
+            position: absolute;
+            width: auto;
+            height: auto;
+            padding: 5px 5px;
+            color: white;
+            border: 1px;
+            border-style: solid;
+            border-width: 1px;
+            border-color: white;
+            pointer-events: none;
+            text-align: left;
+            white-space: normal;
+        }
+
+        #tooltip.hidden {
+            display: none;
+        }
+
+        #tooltip p {
+            margin-top: 0;
+            margin-bottom: 0;
+            font-size: 12px;
+            line-height: 15px;
+        }
+
+        #tooltip::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: -12px;
+            margin-top: -6px;
+            border-width: 6px;
+            border-style: solid;
+            border-color: transparent white transparent transparent;
+        }
+
+        #tooltip::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: -10px;
+            margin-top: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: transparent black transparent transparent;
+        }
+
+        .form-spacing {
+            margin-top: 7px;
+        }
+
+        .table-padding-bottom {
+            margin-bottom: 60px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Counterparty in crashes</h1>
+
+    <div class="container">
+
+        <div id="tooltip" class="hidden">
+            <p><span id="tooltipText"></span></p>
+        </div>
+        <div id="table"></div>
+        <br>
+        <br>
+
+        <b>This dashboard is open source and hosted on a
+            <a href="https://github.com/fenggroup/crash-counterparty/">GitHub repository.</a></b>
+        <br>
+        <br>
+
+    </div>
+
+    <script src="./js/counterparty.js"></script>
+
+</body>
+
+</html>
