@@ -128,8 +128,9 @@ function createAccidentsTable(data) {
     // cells for each row
     rows.selectAll("td")
         .data(function (row) {
+            var rowName = row[Object.keys(row)[0]]; // fetches row name from the first column
             return Object.keys(row).map(function (column) {
-                return { column: column, value: row[column] };
+                return { column: column, value: row[column], row: rowName };
             });
         })
         .enter()
@@ -186,7 +187,19 @@ function createAccidentsTable(data) {
                     text.transition().duration(750)
                         .style("font-size", "18px"); // increase font size on hover
 
+                    var tooltip = d3.select("#tooltip");
+
+                    tooltip.style("left", (event.pageX + 10) + "px")
+                        .style("top", (event.pageY - tooltip.node().getBoundingClientRect().height - 10) + "px")
+                        .classed("hidden", false)
+                        .select("#tooltipText")
+                        .html(tooltipText(d));
                 })
+                    .on("mousemove", function (event) {
+                        var tooltip = d3.select("#tooltip");
+                        tooltip.style("left", (event.pageX + 10) + "px")
+                            .style("top", (event.pageY - tooltip.node().getBoundingClientRect().height - 10) + "px");
+                    })
                     .on("mouseout", function () {
                         circle.transition().duration(750)
                             .attr("r", diameter / 2) // reset the radius
@@ -195,6 +208,8 @@ function createAccidentsTable(data) {
 
                         text.transition().duration(750)
                             .style("font-size", "12px"); // reset the font size
+
+                        d3.select("#tooltip").classed("hidden", true);
                     });
 
             } else if (i === 0) {
@@ -234,5 +249,28 @@ function updateYAxisLabelPosition() {
         .style("transform", "translate(-50%, -50%) rotate(-90deg)")
         .style("transform-origin", "center center");
 }
+
+function tooltipText(d) {
+    var tooltipText = "Counterparty: ";
+
+    var counterparty = d.column;
+    var victim = d.row;
+    var value = d.value;
+
+    var injuryType;
+    if (yAxisLabelText === "Dead") {
+        injuryType = "fatalities";
+    } else if (yAxisLabelText === "Dead or Severely Injured") {
+        injuryType = "fatalities or severe injuries";
+    } else {
+        injuryType = "severe injuries";
+    }
+
+    tooltipText += counterparty + "<br>"
+        + value + " " + victim + " " + injuryType;
+
+    return tooltipText;
+}
+
 
 window.addEventListener("resize", updateYAxisLabelPosition);
