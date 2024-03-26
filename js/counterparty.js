@@ -257,14 +257,7 @@ function tooltipText(d) {
     var victim = mapVictimLabel(d.row); // map the row label to the correct phrase
     var value = d.value;
 
-    var injuryType;
-    if (yAxisLabelText === "Dead") {
-        injuryType = "fatalities";
-    } else if (yAxisLabelText === "Dead or Severely Injured") {
-        injuryType = "fatalities or severe injuries";
-    } else {
-        injuryType = "severe injuries";
-    }
+    var injuryType = yAxisLabelText.toLowerCase();
 
     tooltipText += counterparty + "<br>"
         + value + " " + victim + " " + injuryType;
@@ -274,25 +267,25 @@ function tooltipText(d) {
 
 function mapVictimLabel(victim) {
     const victimMapping = {
-        "Pedestrian": "pedestrian",
-        "Bicycle": "cyclist",
-        "Moped": "moped driver",
-        "Motorcycle": "motorcyclist",
-        "Car (S)": "small car driver",
-        "Car (M)": "medium car driver",
-        "Car (L)": "large car driver",
-        "SUV (S)": "small SUV driver",
-        "SUV (M)": "medium SUV driver",
-        "SUV (L)": "large SUV driver",
-        "SUV (XL)": "extra large SUV driver",
-        "Pickup (S)": "small pickup driver",
-        "Pickup (M)": "medium pickup driver",
-        "Pickup (L)": "large pickup driver",
-        "Pickup (XL)": "extra large pickup driver",
-        "Truck": "truck driver",
-        "Other": "other",
-        "Unknown": "unknown",
-        "Total": "total"
+        "Pedestrian": "pedestrians",
+        "Bicycle": "cyclists",
+        "Moped": "moped drivers",
+        "Motorcycle": "motorcyclists",
+        "Car (S)": "small car drivers",
+        "Car (M)": "medium car drivers",
+        "Car (L)": "large car drivers",
+        "SUV (S)": "small SUV drivers",
+        "SUV (M)": "medium SUV drivers",
+        "SUV (L)": "large SUV drivers",
+        "SUV (XL)": "extra large SUV drivers",
+        "Pickup (S)": "small pickup drivers",
+        "Pickup (M)": "medium pickup drivers",
+        "Pickup (L)": "large pickup drivers",
+        "Pickup (XL)": "extra large pickup drivers",
+        "Truck": "truck drivers",
+        "Other": "other party",
+        "Unknown": "unknown party",
+        "Total": "total parties"
     };
 
     return victimMapping[victim] || victim;
