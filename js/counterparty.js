@@ -3,6 +3,21 @@ var tableContainer, yAxisLabelContainer;
 var filePath = "./data/counterparty-table-fatal.csv";
 
 var yAxisLabelText = "Dead";
+d3.selectAll('input[name="filterPreset"]').on("change", function () {
+    var selectedValue = this.value;
+    if (selectedValue === "fatal") {
+        filePath = "./data/counterparty-table-fatal.csv";
+        yAxisLabelText = "Dead";
+    } else if (selectedValue === "both") {
+        filePath = "./data/counterparty-table-fatal-and-severe.csv";
+        yAxisLabelText = "Dead or Severely Injured";
+    } else {
+        filePath = "./data/counterparty-table-severe-injuries.csv";
+        yAxisLabelText = "Severely Injured";
+    }
+    updateTable();
+});
+
 
 // populate the table
 updateTable();
