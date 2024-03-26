@@ -254,7 +254,7 @@ function tooltipText(d) {
     var tooltipText = "Counterparty: ";
 
     var counterparty = d.column;
-    var victim = d.row;
+    var victim = mapVictimLabel(d.row); // map the row label to the correct phrase
     var value = d.value;
 
     var injuryType;
@@ -270,6 +270,32 @@ function tooltipText(d) {
         + value + " " + victim + " " + injuryType;
 
     return tooltipText;
+}
+
+function mapVictimLabel(victim) {
+    const victimMapping = {
+        "Pedestrian": "pedestrian",
+        "Bicycle": "cyclist",
+        "Moped": "moped driver",
+        "Motorcycle": "motorcyclist",
+        "Car (S)": "small car driver",
+        "Car (M)": "medium car driver",
+        "Car (L)": "large car driver",
+        "SUV (S)": "small SUV driver",
+        "SUV (M)": "medium SUV driver",
+        "SUV (L)": "large SUV driver",
+        "SUV (XL)": "extra large SUV driver",
+        "Pickup (S)": "small pickup driver",
+        "Pickup (M)": "medium pickup driver",
+        "Pickup (L)": "large pickup driver",
+        "Pickup (XL)": "extra large pickup driver",
+        "Truck": "truck driver",
+        "Other": "other",
+        "Unknown": "unknown",
+        "Total": "total"
+    };
+
+    return victimMapping[victim] || victim;
 }
 
 
