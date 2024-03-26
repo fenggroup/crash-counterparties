@@ -23,14 +23,17 @@
             width: auto;
             height: auto;
             padding: 5px 5px;
-            color: white;
-            border: 1px;
+            background-color: white;
+            color: black;
+            border-color: black;
             border-style: solid;
             border-width: 1px;
-            border-color: white;
+            border-radius: 5px;
             pointer-events: none;
             text-align: left;
             white-space: normal;
+            /* z-index makes the tooltip pushed to the front */
+            z-index: 1000;
         }
 
         #tooltip.hidden {
@@ -44,34 +47,21 @@
             line-height: 15px;
         }
 
-        #tooltip::before {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: -12px;
-            margin-top: -6px;
-            border-width: 6px;
-            border-style: solid;
-            border-color: transparent white transparent transparent;
-        }
-
-        #tooltip::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: -10px;
-            margin-top: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: transparent black transparent transparent;
-        }
-
         .form-spacing {
             margin-top: 7px;
         }
 
         .table-padding-bottom {
             margin-bottom: 60px;
+        }
+
+        td {
+            position: relative;
+        }
+
+        td:hover {
+            /* z-index makes the circles pushed to the front when hovering, but behind the tooltip */
+            z-index: 999;
         }
     </style>
 </head>
