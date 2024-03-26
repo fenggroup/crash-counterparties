@@ -1,4 +1,8 @@
+var tableContainer, yAxisLabelContainer;
+
 var filePath = "./data/counterparty-table-fatal.csv";
+
+var yAxisLabelText = "Dead";
 
 // populate the table
 updateTable();
@@ -14,10 +18,37 @@ const iconSize = 25;
 // this is a carry-over from the old table file -- I kept it here for when we add additional files that will require the file to be updated
 function updateTable() {
     d3.selectAll("#table table").remove(); // remove existing table
+    d3.select("#table .x-axis-label").remove(); // remove existing x-axis label if any
+    d3.select("#table .y-axis-label").remove(); // remove existing y-axis label if any
+
+    tableContainer = d3.select("#table"); // assign the value to tableContainer
 
     // Load the accidents data
     d3.csv(filePath).then(function (data) {
         createAccidentsTable(data);
+
+        // x-axis label
+        d3.select("#table")
+            .append("div")
+            .attr("class", "x-axis-label")
+            .style("text-align", "center")
+            .style("margin-top", "10px")
+            .text("Counterparty")
+            .style("font-size", "24px")
+            .style("font-weight", "bold");
+
+        // y-axis label
+        yAxisLabelContainer = tableContainer.insert("div", ":first-child")
+            .attr("class", "y-axis-label")
+            .style("text-align", "center")
+            .style("transform", "rotate(-90deg)")
+            .style("position", "absolute")
+            // .style("margin-bottom", "10px")
+            .text(yAxisLabelText)
+            .style("font-size", "24px")
+            .style("font-weight", "bold");
+
+        updateYAxisLabelPosition();
     });
 }
 
@@ -175,3 +206,18 @@ function createAccidentsTable(data) {
         return scale(value);
     }
 }
+
+function updateYAxisLabelPosition() {
+    var tableRect = tableContainer.node().getBoundingClientRect();
+    var tableLeft = tableRect.left;
+    var tableTop = tableRect.top;
+    var tableHeight = tableRect.height;
+
+    yAxisLabelContainer
+        .style("top", tableTop + tableHeight / 2 + "px")
+        .style("left", tableLeft + "px")
+        .style("transform", "translate(-50%, -50%) rotate(-90deg)")
+        .style("transform-origin", "center center");
+}
+
+window.addEventListener("resize", updateYAxisLabelPosition);
