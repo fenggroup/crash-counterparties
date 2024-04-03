@@ -3,14 +3,22 @@ var tableContainer, yAxisLabelContainer;
 var filePath = "./data/counterparty-table-fatal.csv";
 var yAxisLabelText = "Dead";
 d3.selectAll('input[name="filterPreset"]').on("change", function () {
-    var selectedValue = this.value;
-    if (selectedValue === "fatal") {
-        filePath = "./data/counterparty-table-fatal.csv";
-        yAxisLabelText = "Dead";
-    } else if (selectedValue === "both") {
+    var fatalChecked = d3.select('input[value="fatal"]').property("checked");
+    var injuriesChecked = d3.select('input[value="injuries"]').property("checked");
+
+    if (!fatalChecked && !injuriesChecked) {
+        // If both checkboxes are unchecked, prevent unchecking the current checkbox
+        d3.select(this).property("checked", true);
+        return;
+    }
+
+    if (fatalChecked && injuriesChecked) {
         filePath = "./data/counterparty-table-fatal-and-severe.csv";
         yAxisLabelText = "Dead or Severely Injured";
-    } else {
+    } else if (fatalChecked) {
+        filePath = "./data/counterparty-table-fatal.csv";
+        yAxisLabelText = "Dead";
+    } else if (injuriesChecked) {
         filePath = "./data/counterparty-table-severe-injuries.csv";
         yAxisLabelText = "Severely Injured";
     }
