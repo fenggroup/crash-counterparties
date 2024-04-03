@@ -176,7 +176,7 @@ function createAccidentsTable(data) {
                 const opacityScale = d3.scaleLog()
                     .domain([1, adjustedMaxValue]) // domain starts at 1 to avoid log(0)
                     .range([0.2, 1]);
-                const opacity = d.value == 0 ? 0 : opacityScale(+d.value);
+                const opacity = (d.value == 0 || d.column == "Total" || d.row == "Total") ? 0 : opacityScale(+d.value);
 
                 var svg = cell.append("svg")
                     .attr("width", cellSize)
