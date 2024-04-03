@@ -51,10 +51,11 @@ function updateTable() {
 
         // x-axis label
         d3.select("#table")
-            .append("div")
+            .insert("div", ":first-child")
             .attr("class", "x-axis-label")
             .style("text-align", "center")
             .style("margin-top", "10px")
+            .style("margin-bottom", "5px")
             .text("Counterparty")
             .style("font-size", "24px")
             .style("font-weight", "bold");
