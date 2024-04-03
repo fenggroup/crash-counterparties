@@ -276,41 +276,52 @@ function updateYAxisLabelPosition() {
 }
 
 function tooltipText(d) {
-    var tooltipText = "Counterparty: ";
-
-    var counterparty = d.column;
-    var victim = mapVictimLabel(d.row); // map the row label to the correct phrase
+    var tooltipText;
     var value = d.value;
-
     var injuryType = yAxisLabelText.toLowerCase();
+    var victim = mapVictimLabel(d.row, d.value); // map the row label to the correct phrase
 
-    tooltipText += counterparty + "<br>"
-        + value + " " + victim + " " + injuryType;
+    if (d.row == "Total" && d.column == "Total") {
+        tooltipText = "Total parties " + injuryType + ": " + value;
+    }
+    else if (d.column == "Total") {
+        tooltipText = "Total " + victim + " " + injuryType + ": " + value;
+    }
+    else {
+        var counterparty = "Counterparty: " + d.column;
 
+        if (d.column === "One-sided") {
+            counterparty = "One-sided crashes";
+        } else if (d.column === "2+ counterparties") {
+            counterparty = "Two or more counterparties";
+        }
+
+        tooltipText = counterparty + "<br>" + value + " " + victim + " " + injuryType;
+    }
     return tooltipText;
 }
 
-function mapVictimLabel(victim) {
+function mapVictimLabel(victim, value) {
     const victimMapping = {
-        "Pedestrian": "pedestrians",
-        "Bicycle": "cyclists",
-        "Moped": "moped drivers",
-        "Motorcycle": "motorcyclists",
-        "Car (S)": "small car drivers",
-        "Car (M)": "medium car drivers",
-        "Car (L)": "large car drivers",
-        "SUV (S)": "small SUV drivers",
-        "SUV (M)": "medium SUV drivers",
-        "SUV (L)": "large SUV drivers",
-        "SUV (XL)": "extra large SUV drivers",
-        "Pickup (S)": "small pickup drivers",
-        "Pickup (M)": "medium pickup drivers",
-        "Pickup (L)": "large pickup drivers",
-        "Pickup (XL)": "extra large pickup drivers",
-        "Truck": "truck drivers",
-        "Other": "other party",
-        "Unknown": "unknown party",
-        "Total": "total parties"
+        "Pedestrian": value === 1 ? "pedestrian" : "pedestrians",
+        "Bicycle": value === 1 ? "cyclist" : "cyclists",
+        "Moped": value === 1 ? "moped driver" : "moped drivers",
+        "Motorcycle": value === 1 ? "motorcyclist" : "motorcyclists",
+        "Car (S)": value === 1 ? "driver of a small car" : "drivers of small cars",
+        "Car (M)": value === 1 ? "driver of a medium car" : "drivers of medium cars",
+        "Car (L)": value === 1 ? "driver of a large car" : "drivers of large cars",
+        "SUV (S)": value === 1 ? "driver of a small SUVs" : "drivers of small SUVs",
+        "SUV (M)": value === 1 ? "driver of a medium SUVs" : "drivers of medium SUVs",
+        "SUV (L)": value === 1 ? "driver of a large SUVs" : "drivers of large SUVs",
+        "SUV (XL)": value === 1 ? "driver of a extra large SUVs" : "drivers of extra large SUVs",
+        "Pickup (S)": value === 1 ? "driver of a small pickup" : "drivers of small pickups",
+        "Pickup (M)": value === 1 ? "driver of a medium pickup" : "drivers of medium pickups",
+        "Pickup (L)": value === 1 ? "driver of a large pickup" : "drivers of large pickups",
+        "Pickup (XL)": value === 1 ? "driver of an extra large pickup" : "drivers of extra large pickups",
+        "Truck": value === 1 ? "truck driver" : "truck drivers",
+        "Other": value === 1 ? "other party" : "other parties",
+        "Unknown": value === 1 ? "unknown party" : "unknown parties",
+        "Total": value === 1 ? "total party" : "total parties"
     };
 
     return victimMapping[victim] || victim;
