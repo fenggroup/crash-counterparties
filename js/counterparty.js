@@ -1,7 +1,6 @@
 var tableContainer, yAxisLabelContainer;
 
 var filePath = "./data/counterparty-table-fatal.csv";
-
 var yAxisLabelText = "Dead";
 d3.selectAll('input[name="filterPreset"]').on("change", function () {
     var selectedValue = this.value;
@@ -15,9 +14,9 @@ d3.selectAll('input[name="filterPreset"]').on("change", function () {
         filePath = "./data/counterparty-table-severe-injuries.csv";
         yAxisLabelText = "Severely Injured";
     }
+
     updateTable();
 });
-
 
 // populate the table
 updateTable();
@@ -69,11 +68,11 @@ function updateTable() {
 
 function createAccidentsTable(data) {
     var tableContainer = d3.select("#table");
-    const circleSize = 40;
+    const circleSize = 35;
 
-    // find the maximum value in the dataset
-    const maxValue = d3.max(data, row => {
-        return d3.max(Object.keys(row).map(column => {
+    // find the maximum value in the dataset, excluding the "Total" row and column
+    const maxValue = d3.max(data.slice(0, -1), row => {
+        return d3.max(Object.keys(row).filter(column => column !== "Total").map(column => {
             return isNaN(row[column]) ? 0 : +row[column];
         }));
     });
@@ -93,31 +92,45 @@ function createAccidentsTable(data) {
     var thead = table.append("thead");
     var tbody = table.append("tbody");
 
+    // add an extra column for car sizes
+    var headerData = Object.keys(data[0]);
+    headerData.splice(1, 0, "Car size");
+
     thead.append("tr")
         .selectAll("th")
-        .data(Object.keys(data[0]))
+        .data(headerData)
         .enter()
         .append("th")
         .each(function (d, i) {
             var th = d3.select(this);
-            if (d !== "Total" && d !== "2+ counterparties" && d !== "One-sided") {
+            if (i === 1) {
+                th.text("")
+                    .style("font-size", "10px");
+            } else {
                 var iconPath = "./icons/" + d.toLowerCase() + ".svg"; // Construct the path to the SVG
                 th.append("img")
                     .attr("src", iconPath)
                     .attr("alt", d) // accessibility: add an alt attribute
                     .style("width", "auto") // set width of icons
                     .style("height", iconSize + "px"); // set height to scale with the width
-            } else {
-                if (d == "2+ counterparties") {
-                    th.text("2+");
-                } else if (d == "One-sided") {
-                    th.text("1");
-                }
-                else {
-                    th.text(d);
-                }
             }
         });
+
+    // additional row for car sizes
+    thead.append("tr")
+        .selectAll("th")
+        .data(headerData)
+        .enter()
+        .append("th")
+        .text(function (d, i) {
+            if (i === 1) {
+                return ""; // empty cell for size column
+            } else {
+                var size = d.match(/\(([A-Z]+)\)/); // extract size from the column name
+                return size ? "(" + size[1] + ")" : ""; // return size if available, else empty string
+            }
+        })
+        .style("font-size", "10px");
 
     // table body rows
     var rows = tbody.selectAll("tr")
@@ -127,10 +140,18 @@ function createAccidentsTable(data) {
 
     // cells for each row
     rows.selectAll("td")
-        .data(function (row) {
+        .data(function (row, rowIndex) {
+            var rowData = Object.keys(row).map(function (column) {
+                return { column: column, value: row[column] };
+            });
+
             var rowName = row[Object.keys(row)[0]]; // fetches row name from the first column
-            return Object.keys(row).map(function (column) {
-                return { column: column, value: row[column], row: rowName };
+
+            var size = row[Object.keys(row)[0]].match(/\(([A-Z]+)\)/); // extract size from the row name
+            rowData.splice(1, 0, { column: "Size", value: size ? "(" + size[1] + ")" : "" }); // insert size column
+
+            return rowData.map(function (d) {
+                return { column: d.column, value: d.value, rowIndex: rowIndex, row: rowName }; // add rowIndex to each data object
             });
         })
         .enter()
@@ -140,7 +161,13 @@ function createAccidentsTable(data) {
         .each(function (d, i) {
             var cell = d3.select(this);
 
-            // skip circle drawing for non-numeric values
+            if (i === 1) {
+                cell.text(d.value) // display size value
+                    .style("font-size", "10px")
+                    .style("font-weight", "bold");
+            }
+
+            // skip circle drawing for non-numeric values and the "Total" row and column
             if (!isNaN(d.value)) {
                 // make the cell position relative to allow the circles to grow in size on hover
                 var cell = d3.select(this).style("position", "relative");
@@ -211,18 +238,16 @@ function createAccidentsTable(data) {
 
                         d3.select("#tooltip").classed("hidden", true);
                     });
-
             } else if (i === 0) {
-                if (d.value.toLowerCase() !== "total") {  // add icons for the first column
-                    var iconPath = "./icons/" + d.value.toLowerCase() + ".svg";
-                    cell.append("img")
-                        .attr("src", iconPath)
-                        .attr("alt", d.value) // accessibility: add an alt attribute
-                        .style("width", "auto") // set width of icons
-                        .style("height", iconSize + "px"); // set height to scale with the width
-                } else {
-                    cell.text(d.value);
-                }
+                // add icons for the first column
+                var iconPath = "./icons/" + d.value.toLowerCase() + ".svg";
+                cell.append("img")
+                    .attr("src", iconPath)
+                    .attr("alt", d.value) // accessibility: add an alt attribute
+                    .style("width", "auto") // set width of icons
+                    .style("height", iconSize + "px"); // set height to scale with the width
+            } else if (d.column === "Total" || d.rowIndex === data.length - 1) {
+                cell.text(d.value).style("font-size", "12px"); // display the value for the "Total" column and last row
             }
         });
 
