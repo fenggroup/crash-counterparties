@@ -1,6 +1,6 @@
 var tableContainer, yAxisLabelContainer;
 
-var filePath = "./data/counterparty-table-fatal.csv";
+var filePath = "./data/counterparty-table-k.csv";
 var yAxisLabelText = "Dead";
 d3.selectAll('input[name="filterPreset"]').on("change", function () {
     var fatalChecked = d3.select('input[value="fatal"]').property("checked");
@@ -13,14 +13,14 @@ d3.selectAll('input[name="filterPreset"]').on("change", function () {
     }
 
     if (fatalChecked && injuriesChecked) {
-        filePath = "./data/counterparty-table-fatal-and-severe.csv";
-        yAxisLabelText = "Dead or Severely Injured";
+        filePath = "./data/counterparty-table-ka.csv";
+        yAxisLabelText = "Dead / Seriously Injured";
     } else if (fatalChecked) {
-        filePath = "./data/counterparty-table-fatal.csv";
+        filePath = "./data/counterparty-table-k.csv";
         yAxisLabelText = "Dead";
     } else if (injuriesChecked) {
-        filePath = "./data/counterparty-table-severe-injuries.csv";
-        yAxisLabelText = "Severely Injured";
+        filePath = "./data/counterparty-table-a.csv";
+        yAxisLabelText = "Seriously Injured";
     }
 
     updateTable();
@@ -57,8 +57,8 @@ function updateTable() {
             .style("margin-top", "10px")
             .style("margin-bottom", "5px")
             .text("Counterparty")
-            .style("font-size", "24px")
-            .style("font-weight", "bold");
+            .style("font-size", "20px")
+            // .style("font-weight", "bold");
 
         // y-axis label
         yAxisLabelContainer = tableContainer.insert("div", ":first-child")
@@ -68,8 +68,8 @@ function updateTable() {
             .style("position", "absolute")
             // .style("margin-bottom", "10px")
             .text(yAxisLabelText)
-            .style("font-size", "24px")
-            .style("font-weight", "bold");
+            .style("font-size", "20px")
+            // .style("font-weight", "bold");
 
         updateYAxisLabelPosition();
     });
