@@ -75,6 +75,8 @@ function updateTable() {
     });
 }
 
+const transition_duration = 100
+
 function createAccidentsTable(data) {
     var tableContainer = d3.select("#table");
     const circleSize = 35;
@@ -214,13 +216,13 @@ function createAccidentsTable(data) {
 
                 // apply hover effects to the group
                 group.on("mouseover", function (event, d) {
-                    circle.transition().duration(750)
+                    circle.transition().duration(transition_duration)
                         .attr("r", (diameter / 2) * 1.5) // increase radius on hover
                         .style("opacity", opacity)
                         .style("stroke", "black")
-                        .style("stroke-width", "1px");
+                        .style("stroke-width", "2px");
 
-                    text.transition().duration(750)
+                    text.transition().duration(transition_duration)
                         .style("font-size", "18px"); // increase font size on hover
 
                     var tooltip = d3.select("#tooltip");
@@ -237,12 +239,12 @@ function createAccidentsTable(data) {
                             .style("top", (event.pageY - tooltip.node().getBoundingClientRect().height - 10) + "px");
                     })
                     .on("mouseout", function () {
-                        circle.transition().duration(750)
+                        circle.transition().duration(transition_duration)
                             .attr("r", diameter / 2) // reset the radius
                             .style("opacity", opacity)
                             .style("stroke", "none"); // remove the stroke
 
-                        text.transition().duration(750)
+                        text.transition().duration(transition_duration)
                             .style("font-size", "12px"); // reset the font size
 
                         d3.select("#tooltip").classed("hidden", true);
