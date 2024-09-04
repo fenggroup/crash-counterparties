@@ -2,6 +2,7 @@ var tableContainer, yAxisLabelContainer;
 
 var filePath = "./data/counterparty-table-k.csv";
 var yAxisLabelText = "Dead";
+
 d3.selectAll('input[name="filterPreset"]').on("change", function () {
     var fatalChecked = d3.select('input[value="fatal"]').property("checked");
     var injuriesChecked = d3.select('input[value="injuries"]').property("checked");
@@ -14,13 +15,13 @@ d3.selectAll('input[name="filterPreset"]').on("change", function () {
 
     if (fatalChecked && injuriesChecked) {
         filePath = "./data/counterparty-table-ka.csv";
-        yAxisLabelText = "Dead / Seriously Injured";
+        yAxisLabelText = "Dead or seriously injured";
     } else if (fatalChecked) {
         filePath = "./data/counterparty-table-k.csv";
         yAxisLabelText = "Dead";
     } else if (injuriesChecked) {
         filePath = "./data/counterparty-table-a.csv";
-        yAxisLabelText = "Seriously Injured";
+        yAxisLabelText = "Seriously injured";
     }
 
     updateTable();
@@ -45,9 +46,9 @@ function updateTable() {
 
     tableContainer = d3.select("#table"); // assign the value to tableContainer
 
-    // Load the accidents data
+    // Load the crash data
     d3.csv(filePath).then(function (data) {
-        createAccidentsTable(data);
+        createCrashTable(data);
 
         // x-axis label
         d3.select("#table")
@@ -58,7 +59,6 @@ function updateTable() {
             .style("margin-bottom", "5px")
             .text("Counterparty")
             .style("font-size", "20px")
-            // .style("font-weight", "bold");
 
         // y-axis label
         yAxisLabelContainer = tableContainer.insert("div", ":first-child")
@@ -69,7 +69,6 @@ function updateTable() {
             // .style("margin-bottom", "10px")
             .text(yAxisLabelText)
             .style("font-size", "20px")
-            // .style("font-weight", "bold");
 
         updateYAxisLabelPosition();
     });
@@ -77,7 +76,7 @@ function updateTable() {
 
 const transition_duration = 100
 
-function createAccidentsTable(data) {
+function createCrashTable(data) {
     var tableContainer = d3.select("#table");
     const circleSize = 35;
 
@@ -141,7 +140,8 @@ function createAccidentsTable(data) {
                 return size ? "(" + size[1] + ")" : ""; // return size if available, else empty string
             }
         })
-        .style("font-size", "10px");
+        .style("font-size", "10px")
+        .style("font-weight", "normal");
 
     // table body rows
     var rows = tbody.selectAll("tr")
@@ -168,18 +168,20 @@ function createAccidentsTable(data) {
         .enter()
         .append("td")
         .style("text-align", "center")
-        .style("font-weight", function (d, i) { return i === 0 ? "bold" : "normal"; })
+        // .style("font-size", "20px")
+        // .style("font-weight", function (d, i) { return i === 0 ? "bold" : "normal"; })
         .each(function (d, i) {
             var cell = d3.select(this);
 
             if (i === 1) {
                 cell.text(d.value) // display size value
                     .style("font-size", "10px")
-                    .style("font-weight", "bold");
+                    // .style("font-weight", "bold");
             }
 
             // skip circle drawing for non-numeric values and the "Total" row and column
             if (!isNaN(d.value)) {
+                if (d.value != "-1") {
                 // make the cell position relative to allow the circles to grow in size on hover
                 var cell = d3.select(this).style("position", "relative");
 
@@ -249,6 +251,8 @@ function createAccidentsTable(data) {
 
                         d3.select("#tooltip").classed("hidden", true);
                     });
+                } else {cell.text("-").style("font-size", "16px");
+                }
             } else if (i === 0) {
                 // add icons for the first column
                 var iconPath = "./icons/" + d.value.toLowerCase() + ".svg";
@@ -307,7 +311,7 @@ function tooltipText(d) {
             counterparty = "Two or more counterparties";
         }
 
-        tooltipText = counterparty + "<br>" + value + " " + victim + " " + injuryType;
+        tooltipText = value + " " + victim + " " + injuryType + "<br>" + counterparty ;
     }
     return tooltipText;
 }
@@ -315,20 +319,20 @@ function tooltipText(d) {
 function mapVictimLabel(victim, value) {
     const victimMapping = {
         "Pedestrian": value == 1 ? "pedestrian" : "pedestrians",
-        "Bicycle": value == 1 ? "cyclist" : "cyclists",
-        "Moped": value == 1 ? "moped driver" : "moped drivers",
-        "Motorcycle": value == 1 ? "motorcyclist" : "motorcyclists",
+        "Bicyclist": value == 1 ? "bicyclist" : "bicyclists",
+        "Moped rider": value == 1 ? "moped rider" : "moped riders",
+        "Motorcyclist": value == 1 ? "motorcyclist" : "motorcyclists",
         "Car (S)": value == 1 ? "driver of a small car" : "drivers of small cars",
-        "Car (M)": value == 1 ? "driver of a medium car" : "drivers of medium cars",
+        "Car (M)": value == 1 ? "driver of a medium car" : "drivers of midsize cars",
         "Car (L)": value == 1 ? "driver of a large car" : "drivers of large cars",
         "SUV (S)": value == 1 ? "driver of a small SUV" : "drivers of small SUVs",
-        "SUV (M)": value == 1 ? "driver of a medium SUV" : "drivers of medium SUVs",
+        "SUV (M)": value == 1 ? "driver of a medium SUV" : "drivers of midsize SUVs",
         "SUV (L)": value == 1 ? "driver of a large SUV" : "drivers of large SUVs",
-        "SUV (XL)": value == 1 ? "driver of a extra large SUV" : "drivers of extra large SUVs",
+        "SUV (XL)": value == 1 ? "driver of a extra large SUV" : "drivers of extra-large SUVs",
         "Pickup (S)": value == 1 ? "driver of a small pickup" : "drivers of small pickups",
-        "Pickup (M)": value == 1 ? "driver of a medium pickup" : "drivers of medium pickups",
+        "Pickup (M)": value == 1 ? "driver of a medium pickup" : "drivers of midsize pickups",
         "Pickup (L)": value == 1 ? "driver of a large pickup" : "drivers of large pickups",
-        "Pickup (XL)": value == 1 ? "driver of an extra large pickup" : "drivers of extra large pickups",
+        "Pickup (XL)": value == 1 ? "driver of an extra large pickup" : "drivers of extra-large pickups",
         "Truck": value == 1 ? "truck driver" : "truck drivers",
         "Other": value == 1 ? "other party" : "other parties",
         "Unknown": value == 1 ? "unknown party" : "unknown parties",
