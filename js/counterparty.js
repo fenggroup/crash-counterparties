@@ -34,7 +34,7 @@ updateTable();
 var width = 1000,
     height = 800,
     margin = { top: 50, right: 30, bottom: 30, left: 30 };
-const cellSize = 30;
+const cellSize = 35;
 const iconSize = 25;
 
 // update the table with traffic accident data
@@ -297,7 +297,7 @@ function tooltipText(d) {
     var victim = mapVictimLabel(d.row, d.value); // map the row label to the correct phrase
 
     if (d.row == "Total" && d.column == "Total") {
-        tooltipText = "Total parties " + injuryType + ": " + value;
+        tooltipText = "Total " + injuryType + ": " + value;
     }
     else if (d.column == "Total") {
         tooltipText = "Total " + victim + " " + injuryType + ": " + value;
@@ -322,21 +322,15 @@ function mapVictimLabel(victim, value) {
         "Bicyclist": value == 1 ? "bicyclist" : "bicyclists",
         "Moped rider": value == 1 ? "moped rider" : "moped riders",
         "Motorcyclist": value == 1 ? "motorcyclist" : "motorcyclists",
-        "Car (S)": value == 1 ? "driver of a small car" : "drivers of small cars",
-        "Car (M)": value == 1 ? "driver of a medium car" : "drivers of midsize cars",
-        "Car (L)": value == 1 ? "driver of a large car" : "drivers of large cars",
-        "SUV (S)": value == 1 ? "driver of a small SUV" : "drivers of small SUVs",
-        "SUV (M)": value == 1 ? "driver of a medium SUV" : "drivers of midsize SUVs",
-        "SUV (L)": value == 1 ? "driver of a large SUV" : "drivers of large SUVs",
-        "SUV (XL)": value == 1 ? "driver of a extra large SUV" : "drivers of extra-large SUVs",
-        "Pickup (S)": value == 1 ? "driver of a small pickup" : "drivers of small pickups",
-        "Pickup (M)": value == 1 ? "driver of a medium pickup" : "drivers of midsize pickups",
-        "Pickup (L)": value == 1 ? "driver of a large pickup" : "drivers of large pickups",
-        "Pickup (XL)": value == 1 ? "driver of an extra large pickup" : "drivers of extra-large pickups",
+        "Car": value == 1 ? "car driver" : "car drivers",
+        "SUV": value == 1 ? "SUV driver" : "SUV drivers",
+        "Pickup": value == 1 ? "pickup truck driver" : "pickup truck drivers",
+        "Van": value == 1 ? "van driver" : "van drivers",
+        "Bus": value == 1 ? "bus driver" : "bus drivers",
         "Truck": value == 1 ? "truck driver" : "truck drivers",
-        "Other": value == 1 ? "other party" : "other parties",
-        "Unknown": value == 1 ? "unknown party" : "unknown parties",
-        "Total": value == 1 ? "total party" : "total parties"
+        "Other": value == 1 ? "driver of other vehicle types" : "drivers of other vehicle types",
+        "Unknown": value == 1 ? "driver of unknown vehicle type" : "drivers of unknown vehicle type",
+        "Total": value == 1 ? "total" : "total"
     };
 
     return victimMapping[victim] || victim;

@@ -7,7 +7,7 @@ body {
 }
 
 .container {
-	width: 900px;
+	width: 700px;
 	margin: 0px auto;
 	padding-top: 0px;
 	padding-bottom: 0px;
@@ -21,8 +21,14 @@ body {
   }
 
 
-.datepicker,
+/* .datepicker,
 .table-condensed {
 	width: 220px;
 	height: 260px;
+} */
+
+#table {
+	margin-left: auto;
+	margin-right: auto;
+	/* border:1px solid black; */
 }
